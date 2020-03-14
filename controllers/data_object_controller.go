@@ -17,7 +17,7 @@ type DataObjectController struct {
 const (
 	VehicleGroup = "vehicle"
 	TrafficGroup = "traffic"
-	HandleGroup = "handle"
+	HandleGroup  = "handle"
 )
 
 func (d DataObjectController) CreateNewObjectInGroup(w http.ResponseWriter, r *http.Request) {
@@ -60,16 +60,16 @@ func (d DataObjectController) CreateNewObjectInGroup(w http.ResponseWriter, r *h
 
 	case HandleGroup:
 
-		var trafficList []TrafficInfraModel
+		var handlesList []HandlesModel
 
-		if err := json.NewDecoder(r.Body).Decode(&trafficList); err != nil {
+		if err := json.NewDecoder(r.Body).Decode(&handlesList); err != nil {
 			respondWithError(w, http.StatusBadRequest, "Invalid Request")
 			return
 		}
-		for i, _ := range trafficList {
-			trafficList[i].ID = bson.NewObjectId()
+		for i, _ := range handlesList {
+			handlesList[i].ID = bson.NewObjectId()
 		}
-		if err := d.ObjectDao.InsertNewTrafficInfraObject(trafficList); err != nil {
+		if err := d.ObjectDao.InsertNewHandles(handlesList); err != nil {
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -105,6 +105,13 @@ func (d DataObjectController) GetObjectInGroupById(w http.ResponseWriter, r *htt
 			return
 		}
 		respondWithJson(w, http.StatusOK, trafficInfra)
+	case HandleGroup:
+		handles, err := d.ObjectDao.GetAllHandlesInGroup(objectId)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		respondWithJson(w, http.StatusOK, handles)
 	default:
 		respondWithError(w, http.StatusBadRequest, "Invalid group name")
 	}

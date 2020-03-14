@@ -156,10 +156,29 @@ func (m *ObjectDao) GetAllHandles() ([]HandlesModel, error) {
 	return handlesList, err
 }
 
-func (m *ObjectDao) InsertNewHandle(handleObj HandlesModel) error {
+func (m *ObjectDao) GetAllHandlesInGroup(group string) ([]HandlesModel, error) {
 	session := db.Clone()
 	defer session.Close()
 
-	err := session.DB(m.Database).C(CollectionHandles).Insert(handleObj)
+	var handlesModel []HandlesModel
+	err := session.DB(m.Database).C(CollectionHandles).Find(bson.M{"group": group}).All(&handlesModel)
+	return handlesModel, err
+}
+
+func (m *ObjectDao) InsertNewHandles(objList []HandlesModel) error {
+	session := db.Clone()
+	defer session.Close()
+
+	var insData []interface{}
+
+	for _, val := range objList {
+		insData = append(insData, val)
+	}
+
+	collection := session.DB(m.Database).C(CollectionHandles)
+	bulk := collection.Bulk()
+	bulk.Unordered()
+	bulk.Insert(insData...)
+	_, err := bulk.Run()
 	return err
 }
