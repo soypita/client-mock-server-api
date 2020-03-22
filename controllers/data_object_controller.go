@@ -20,6 +20,37 @@ const (
 	HandleGroup  = "handle"
 )
 
+func (d DataObjectController) DeleteAllObjectsInGroup(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	groupName := params["groupName"]
+
+	switch groupName {
+	case VehicleGroup:
+		err := d.ObjectDao.DeleteAllVehicleObjects()
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		respondWithJson(w, http.StatusOK, `{"status": "success"}`)
+	case TrafficGroup:
+		err := d.ObjectDao.DeleteAllTrafficInfraObjects()
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		respondWithJson(w, http.StatusOK, `{"status": "success"}`)
+	case HandleGroup:
+		err := d.ObjectDao.DeleteAllHandleObjects()
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		respondWithJson(w, http.StatusOK, `{"status": "success"}`)
+	default:
+		respondWithError(w, http.StatusBadRequest, "Invalid group name")
+	}
+}
+
 func (d DataObjectController) CreateNewObjectInGroup(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	groupName := params["groupName"]

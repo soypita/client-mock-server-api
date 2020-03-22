@@ -16,6 +16,7 @@ type VehiclesModel struct {
 	EgrulCreationDate    string        `bson:"egrulCreationDate" json:"egrulCreationDate"`
 	Category             string        `bson:"category" json:"category"`
 	CategoryCreationDate string        `bson:"categoryCreationDate" json:"categoryCreationDate"`
+	CategoryRefreshDate  string        `bson:"categoryRefreshDate" json:"categoryRefreshDate"`
 	RegistryCancelDate   string        `bson:"registryExpireDate" json:"registryExpireDate"`
-	CancelDescription	 string			`bson:"cancelDescription" json:"cancelDescription"`
+	CancelDescription    string        `bson:"cancelDescription" json:"cancelDescription"`
 }

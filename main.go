@@ -25,5 +25,6 @@ func main() {
 	router.HandleFunc("/api/resources/{groupName}/create", controller.CreateNewObjectInGroup).Methods("POST")
 	router.HandleFunc("/api/resources/{groupName}/getById/{id}", controller.GetObjectInGroupById).Methods("GET")
 	router.HandleFunc("/api/resources/{groupName}/getAll", controller.GetAllDataInGroups).Methods("GET")
+	router.HandleFunc("/api/resources/{groupName}/deleteAll", controller.DeleteAllObjectsInGroup).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }

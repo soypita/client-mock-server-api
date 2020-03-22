@@ -109,6 +109,15 @@ func (m *ObjectDao) InsertNewTrafficInfraObject(objList []TrafficInfraModel) err
 	return err
 }
 
+func (m *ObjectDao) DeleteAllTrafficInfraObjects() error {
+	session := db.Clone()
+	defer session.Close()
+
+	_, err := session.DB(m.Database).C(CollectionTransportInfra).RemoveAll(bson.M{})
+
+	return err
+}
+
 // Vehicles Objects methods
 func (m *ObjectDao) GetAllVehicles() ([]VehiclesModel, error) {
 	session := db.Clone()
@@ -146,6 +155,26 @@ func (m *ObjectDao) InsertNewVehiclesObject(objList []VehiclesModel) error {
 	return err
 }
 
+func (m *ObjectDao) UpdateVehicleObjectById(vin string, obj VehiclesModel) error {
+	session := db.Clone()
+	defer session.Close()
+
+	updateInfo := mgo.Change{
+		Update:    nil,
+	}
+
+	err := session.DB(m.Database).C(CollectionVehicles).Update(bson.M{"vin": vin}, obj)
+}
+
+func (m *ObjectDao) DeleteAllVehicleObjects() error {
+	session := db.Clone()
+	defer session.Close()
+
+	_, err := session.DB(m.Database).C(CollectionVehicles).RemoveAll(bson.M{})
+
+	return err
+}
+
 // Handles methods
 func (m *ObjectDao) GetAllHandles() ([]HandlesModel, error) {
 	session := db.Clone()
@@ -180,5 +209,14 @@ func (m *ObjectDao) InsertNewHandles(objList []HandlesModel) error {
 	bulk.Unordered()
 	bulk.Insert(insData...)
 	_, err := bulk.Run()
+	return err
+}
+
+func (m *ObjectDao) DeleteAllHandleObjects() error {
+	session := db.Clone()
+	defer session.Close()
+
+	_, err := session.DB(m.Database).C(CollectionHandles).RemoveAll(bson.M{})
+
 	return err
 }
