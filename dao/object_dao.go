@@ -155,17 +155,6 @@ func (m *ObjectDao) InsertNewVehiclesObject(objList []VehiclesModel) error {
 	return err
 }
 
-func (m *ObjectDao) UpdateVehicleObjectById(vin string, obj VehiclesModel) error {
-	session := db.Clone()
-	defer session.Close()
-
-	updateInfo := mgo.Change{
-		Update:    nil,
-	}
-
-	err := session.DB(m.Database).C(CollectionVehicles).Update(bson.M{"vin": vin}, obj)
-}
-
 func (m *ObjectDao) DeleteAllVehicleObjects() error {
 	session := db.Clone()
 	defer session.Close()
