@@ -205,7 +205,7 @@ func (d DataObjectController) GetAllDataInGroups(w http.ResponseWriter, r *http.
 		}
 		respondWithJson(w, http.StatusOK, trafficList)
 	case CargoGroup:
-		trafficList, err := d.ObjectDao.GetAllTrafficInfra()
+		trafficList, err := d.ObjectDao.GetAllCargo()
 		if err != nil {
 			respondWithError(w, http.StatusNotFound, err.Error())
 			return
