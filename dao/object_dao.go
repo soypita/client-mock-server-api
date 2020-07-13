@@ -109,6 +109,15 @@ func (m *ObjectDao) InsertNewTrafficInfraObject(objList []TrafficInfraModel) err
 	return err
 }
 
+func (m *ObjectDao) GetAllCargo() ([]CargoModel, error) {
+	var cargoModelList []CargoModel
+	session := db.Clone()
+	defer session.Close()
+
+	err := session.DB(m.Database).C(CollectionCargo).Find(bson.M{}).All(&cargoModelList)
+	return cargoModelList, err
+}
+
 func (m *ObjectDao) InsertNewCargoObject(objList []CargoModel) error {
 	session := db.Clone()
 	defer session.Close()
@@ -127,13 +136,13 @@ func (m *ObjectDao) InsertNewCargoObject(objList []CargoModel) error {
 	return err
 }
 
-func (m *ObjectDao) GetCargoByRegistryNumber(number string) (TrafficInfraModel, error) {
-	var trafficInfra TrafficInfraModel
+func (m *ObjectDao) GetCargoByRegistryNumber(number string) (CargoModel, error) {
+	var cargo CargoModel
 	session := db.Clone()
 	defer session.Close()
 
-	err := session.DB(m.Database).C(CollectionCargo).Find(bson.M{"registryNumber": number}).One(&trafficInfra)
-	return trafficInfra, err
+	err := session.DB(m.Database).C(CollectionCargo).Find(bson.M{"registryNumber": number}).One(&cargo)
+	return cargo, err
 }
 
 func (m *ObjectDao) DeleteAllTrafficInfraObjects() error {
