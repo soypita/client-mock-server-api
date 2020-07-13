@@ -145,6 +145,15 @@ func (m *ObjectDao) DeleteAllTrafficInfraObjects() error {
 	return err
 }
 
+func (m *ObjectDao) DeleteAllCargoObjects() error {
+	session := db.Clone()
+	defer session.Close()
+
+	_, err := session.DB(m.Database).C(CollectionCargo).RemoveAll(bson.M{})
+
+	return err
+}
+
 // Vehicles Objects methods
 func (m *ObjectDao) GetAllVehicles() ([]VehiclesModel, error) {
 	session := db.Clone()

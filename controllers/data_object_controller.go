@@ -40,6 +40,13 @@ func (d DataObjectController) DeleteAllObjectsInGroup(w http.ResponseWriter, r *
 			return
 		}
 		respondWithJson(w, http.StatusOK, `{"status": "success"}`)
+	case CargoGroup:
+		err := d.ObjectDao.DeleteAllCargoObjects()
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		respondWithJson(w, http.StatusOK, `{"status": "success"}`)
 	case HandleGroup:
 		err := d.ObjectDao.DeleteAllHandleObjects()
 		if err != nil {
