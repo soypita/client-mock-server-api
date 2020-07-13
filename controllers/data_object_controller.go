@@ -17,6 +17,7 @@ type DataObjectController struct {
 const (
 	VehicleGroup = "vehicle"
 	TrafficGroup = "traffic"
+	CargoGroup   = "cargo"
 	HandleGroup  = "handle"
 )
 
@@ -89,6 +90,22 @@ func (d DataObjectController) CreateNewObjectInGroup(w http.ResponseWriter, r *h
 		}
 		respondWithJson(w, http.StatusOK, `{"status": "success"}`)
 
+	case CargoGroup:
+		var cargoList []CargoModel
+
+		if err := json.NewDecoder(r.Body).Decode(&cargoList); err != nil {
+			respondWithError(w, http.StatusBadRequest, "Invalid Request")
+			return
+		}
+		for i, _ := range cargoList {
+			cargoList[i].ID = bson.NewObjectId()
+		}
+		if err := d.ObjectDao.InsertNewCargoObject(cargoList); err != nil {
+			respondWithError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		respondWithJson(w, http.StatusOK, `{"status": "success"}`)
+
 	case HandleGroup:
 
 		var handlesList []HandlesModel
@@ -136,6 +153,19 @@ func (d DataObjectController) GetObjectInGroupById(w http.ResponseWriter, r *htt
 			return
 		}
 		respondWithJson(w, http.StatusOK, trafficInfra)
+
+	case CargoGroup:
+		decodeId, err := url.QueryUnescape(objectId)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		cargo, err := d.ObjectDao.GetCargoByRegistryNumber(decodeId)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		respondWithJson(w, http.StatusOK, cargo)
 	case HandleGroup:
 		handles, err := d.ObjectDao.GetAllHandlesInGroup(objectId)
 		if err != nil {

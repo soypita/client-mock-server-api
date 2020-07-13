@@ -15,7 +15,7 @@ type ObjectDao struct {
 var db *mgo.Session
 
 const (
-	//COLLECTION_CARGO = "cargo"
+	CollectionCargo          = "cargo"
 	CollectionVehicles       = "vehicles"
 	CollectionTransportInfra = "transport_infra"
 	CollectionHandles        = "handles"
@@ -107,6 +107,33 @@ func (m *ObjectDao) InsertNewTrafficInfraObject(objList []TrafficInfraModel) err
 	bulk.Insert(insData...)
 	_, err := bulk.Run()
 	return err
+}
+
+func (m *ObjectDao) InsertNewCargoObject(objList []CargoModel) error {
+	session := db.Clone()
+	defer session.Close()
+
+	var insData []interface{}
+
+	for _, val := range objList {
+		insData = append(insData, val)
+	}
+
+	collection := session.DB(m.Database).C(CollectionCargo)
+	bulk := collection.Bulk()
+	bulk.Unordered()
+	bulk.Insert(insData...)
+	_, err := bulk.Run()
+	return err
+}
+
+func (m *ObjectDao) GetCargoByRegistryNumber(number string) (TrafficInfraModel, error) {
+	var trafficInfra TrafficInfraModel
+	session := db.Clone()
+	defer session.Close()
+
+	err := session.DB(m.Database).C(CollectionCargo).Find(bson.M{"registryNumber": number}).One(&trafficInfra)
+	return trafficInfra, err
 }
 
 func (m *ObjectDao) DeleteAllTrafficInfraObjects() error {
