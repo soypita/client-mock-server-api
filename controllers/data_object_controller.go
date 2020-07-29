@@ -160,7 +160,6 @@ func (d DataObjectController) GetObjectInGroupById(w http.ResponseWriter, r *htt
 			return
 		}
 		respondWithJson(w, http.StatusOK, trafficInfra)
-
 	case CargoGroup:
 		decodeId, err := url.QueryUnescape(objectId)
 		if err != nil {
@@ -231,7 +230,7 @@ func respondWithError(w http.ResponseWriter, code int, msg string) {
 
 func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(code)
 	w.Write(response)
 }
